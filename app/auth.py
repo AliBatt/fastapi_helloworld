@@ -13,7 +13,10 @@ def hash_password(password: str):
     return pwd_context.hash(password)
 
 def verify_password(plain, hashed):
-    return pwd_context.verify(plain, hashed)
+    try:
+        return pwd_context.verify(plain, hashed)
+    except Exception:
+        return False
 
 def create_access_token(data: dict):
     to_encode = data.copy()

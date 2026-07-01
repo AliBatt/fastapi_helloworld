@@ -1,26 +1,20 @@
 import fastapi
+from sqlalchemy.orm import Session
+from app.database import get_db
+from app.user_model import User
+from fastapi import Depends
 
 router = fastapi.APIRouter()
-users = [
-    {
-        "id": 1,
-        "name": "John Doe",
-        "email": "john.doe@example.com"
-    },
-    {
-        "id": 2,
-        "name": "Jane Doe",
-        "email": "jane.doe@example.com"
-    }
-]
-
 @router.get("/users")
-async def get_users():
-    return users
-
-@router.get("/users/{user_id}")
-async def get_user(user_id: int):
-    user = next((user for user in users if user["id"] == user_id), None)
-    if user is None:
-        raise fastapi.HTTPException(status_code=404, detail="User not found")
-    return user
+async def get_user(db: Session = Depends(get_db)):
+    users = db.query(User).all()
+    return {
+        "data": [
+            {
+                "id": user.id,
+                "email": user.email,
+                "language": user.language
+            }
+            for user in users
+        ]
+    }
