@@ -56,5 +56,6 @@ def get_profile(
 ):
     return {
         "id": current_user.id,
-        "email": current_user.email
+        "email": current_user.email,
+        "language": current_user.language
     }
